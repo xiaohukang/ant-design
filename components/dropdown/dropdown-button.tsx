@@ -88,8 +88,8 @@ const DropdownButton: CompoundedComponent = (props) => {
     getPopupContainer: getPopupContainer || getContextPopupContainer,
     mouseEnterDelay,
     mouseLeaveDelay,
-    overlayClassName,
-    overlayStyle,
+    classNames: { popup: overlayClassName },
+    styles: { popup: overlayStyle },
     destroyPopupOnHide,
     popupRender: mergedPopupRender,
   };

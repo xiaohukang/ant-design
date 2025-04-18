@@ -66,7 +66,9 @@ export interface DropdownProps {
   rootClassName?: string;
   transitionName?: string;
   placement?: Placement;
+  /** @deprecated please use `classNames.popup` instead.*/
   overlayClassName?: string;
+  /** @deprecated please use `styles.popup.root` instead.*/
   overlayStyle?: React.CSSProperties;
   forceRender?: boolean;
   mouseEnterDelay?: number;
@@ -120,6 +122,13 @@ const Dropdown: CompoundedComponent = (props) => {
     [contextStyles, styles],
   );
 
+  const mergedPopupStyles = {
+    ...contextStyle,
+    ...overlayStyle,
+    ...mergedStyles.root,
+    ...mergedStyles.popup,
+  };
+
   const mergedPopupRender = popupRender || dropdownRender;
 
   // =================== Warning =====================
@@ -127,6 +136,8 @@ const Dropdown: CompoundedComponent = (props) => {
   if (process.env.NODE_ENV !== 'production') {
     const deprecatedProps = {
       dropdownRender: 'popupRender',
+      overlayClassName: 'classNames.popup',
+      overlayStyle: 'styles.popup.root',
     };
 
     Object.entries(deprecatedProps).forEach(([deprecatedName, newName]) => {
@@ -211,8 +222,8 @@ const Dropdown: CompoundedComponent = (props) => {
     cssVarCls,
     rootCls,
     contextClassName,
-    mergedClassNames?.root,
-    mergedClassNames?.popup,
+    mergedClassNames.root,
+    mergedClassNames.popup,
     { [`${prefixCls}-rtl`]: direction === 'rtl' },
   );
 
@@ -277,7 +288,7 @@ const Dropdown: CompoundedComponent = (props) => {
   };
 
   // =========================== zIndex ============================
-  const [zIndex, contextZIndex] = useZIndex('Dropdown', overlayStyle?.zIndex as number);
+  const [zIndex, contextZIndex] = useZIndex('Dropdown', mergedPopupStyles.zIndex as number);
 
   // ============================ Render ============================
   let renderNode = (
@@ -298,10 +309,7 @@ const Dropdown: CompoundedComponent = (props) => {
       placement={memoPlacement}
       onVisibleChange={onInnerOpenChange}
       overlayStyle={{
-        ...contextStyle,
-        ...mergedStyles?.root,
-        ...mergedStyles?.popup,
-        ...overlayStyle,
+        ...mergedPopupStyles,
         zIndex,
       }}
     >
